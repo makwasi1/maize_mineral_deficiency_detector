@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "815382365773",
+    "project_id": "maize-2507e",
+    "storage_bucket": "maize-2507e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815382365773:android:1ef0a507fc9e39a7fabe04",
+        "android_client_info": {
+          "package_name": "com.example.maizeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "815382365773-32qd5amlfbr6g8vofnsvjhfmttlsr831.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.maizeapp",
+            "certificate_hash": "e2c1da948525a531cf053726f3caef852b4bd61f"
+          }
+        },
+        {
+          "client_id": "815382365773-ubr25bd9ue8g3v9mg1eg30lcmtp10rnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkrlrPILwqt5VxMuyTaRPV2glz5J21klM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "815382365773-ubr25bd9ue8g3v9mg1eg30lcmtp10rnj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

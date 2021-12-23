@@ -1,90 +1,3 @@
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter/material.dart';
-// import 'package:maizeapp/screens/register/register_screen.dart';
-// import 'package:maizeapp/widgets/gradient_button.dart';
-//
-// class LoginForm extends StatefulWidget {
-//
-//   @override
-//   _LoginFormState createState() => _LoginFormState();
-// }
-//
-// class _LoginFormState extends State<LoginForm> {
-//   final TextEditingController _emailController = TextEditingController();
-//   final TextEditingController _passwordController = TextEditingController();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(20.0),
-//       child: Form(
-//         child: Column(
-//           children: <Widget>[
-//             TextFormField(
-//               autovalidateMode: AutovalidateMode.always, controller: _emailController,
-//               decoration: InputDecoration(
-//                 icon: Icon(Icons.email),
-//                 labelText: "Email"
-//               ),
-//               keyboardType: TextInputType.emailAddress,
-//             ),
-//             SizedBox(
-//               height: 10,
-//             ),
-//             TextFormField(
-//               autovalidateMode: AutovalidateMode.always, controller: _passwordController,
-//               decoration: InputDecoration(
-//                   icon: Icon(Icons.lock),
-//                 labelText: "Password"
-//               ),
-//               obscureText:true,
-//             ),
-//             SizedBox(
-//               height: 10,
-//             ),
-//             GradientButton(
-//               width: 150,
-//                height: 45,
-//               onPressed: (){},
-//               text: Text('Login',
-//                 style: TextStyle(
-//                 color: Colors.black,
-//                 fontSize: 20
-//               ),),
-//               icon: Icon(Icons.check),
-//             ),
-//             SizedBox(
-//               height: 10,
-//             ),
-//             GradientButton(
-//               width: 150,
-//                height: 45,
-//               onPressed: (){
-//                 Navigator.push(context, MaterialPageRoute(builder: (_){
-//                   return RegisterScreen();
-//                 }
-//                 ));
-//               },
-//               text: Text('Register',
-//                 style: TextStyle(
-//                 color: Colors.black,
-//                 fontSize: 20
-//               ),),
-//               icon: Icon(Icons.arrow_forward),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -189,7 +102,6 @@ class _LoginFormState extends State<LoginForm> {
                       labelText: "Email",
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    autovalidate: true,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isEmailValid ? 'Invalid Email' : null;
@@ -202,7 +114,6 @@ class _LoginFormState extends State<LoginForm> {
                       labelText: "Password",
                     ),
                     obscureText: true,
-                    autovalidate: true,
                     autocorrect: false,
                     validator: (_) {
                       return !state.isPasswordValid ? 'Invalid Password' : null;

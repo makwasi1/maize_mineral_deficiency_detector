@@ -1,34 +1,81 @@
 import 'dart:io';
 
+import 'package:blurry/blurry.dart';
+import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tflite/tflite.dart';
+import 'package:maizeapp/screens/classifier.dart';
+import 'package:maizeapp/screens/classifier_quant.dart';
+import 'package:logger/logger.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class TakePicture extends StatefulWidget {
+  const TakePicture({Key key, this.title}) : super(key: key);
+
+  final String title;
   @override
   _TakePictureState createState() => _TakePictureState();
 }
 
 class _TakePictureState extends State<TakePicture> {
-  List _output;
-  var _image;
-  bool _loading;
-  String _name = "";
-  String _confidence = "";
-  PickedFile imageFile = null;
+  Classifier _classifier;
+
+  var logger = Logger();
+
+  File _image;
+  final picker = ImagePicker();
+
+  Image _imageWidget;
+
+  img.Image fox;
+
+  Category category;
 
   @override
   void initState() {
     super.initState();
-    _loading = true;
+    _classifier = ClassifierQuant();
+  }
 
-    loadModal().then((value) {
-      setState(() {
-        _loading = false;
-      });
+  //get image from gallery
+  void _getImage(BuildContext context) async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile.path);
+      _imageWidget = Image.file(_image);
+
+      _predict();
+    });
+    Navigator.pop(context);
+  }
+
+  //get image from phone camera
+  void _getImageCamera(BuildContext context) async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = File(pickedFile.path);
+      _imageWidget = Image.file(_image);
+
+      _predict();
+    });
+    Navigator.pop(context);
+  }
+
+  //the predict function that takes in the image
+  void _predict() async {
+    img.Image imageInput = img.decodeImage(_image.readAsBytesSync());
+    var pred = _classifier.predict(imageInput);
+
+    setState(() {
+      this.category = pred;
     });
   }
 
+  //display the dialog box for user to select image
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -47,7 +94,7 @@ class _TakePictureState extends State<TakePicture> {
                   ),
                   ListTile(
                     onTap: () {
-                      _openGallery(context);
+                      _getImage(context);
                     },
                     title: Text("Gallery"),
                     leading: Icon(
@@ -61,7 +108,7 @@ class _TakePictureState extends State<TakePicture> {
                   ),
                   ListTile(
                     onTap: () {
-                      _openCamera(context);
+                      _getImageCamera(context);
                     },
                     title: Text("Camera"),
                     leading: Icon(
@@ -79,90 +126,63 @@ class _TakePictureState extends State<TakePicture> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Take Picture"),
-          centerTitle: true,
-          backgroundColor: Colors.green,
-        ),
-        body: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                SizedBox(height: 30,),
-                Card(
-                    child: _image == null
-                        ? Text('No image selected.')
-                        : Image.file(_image)),
-                Container(
-                  child:
-                    Text("Name: $_name \nConfidence: $_confidence"),
-                ),
-                MaterialButton(
-                  textColor: Colors.white,
-                  color: Colors.pink,
-                  onPressed: () {
-                    _showChoiceDialog(context);
-                  },
-                  child: Text("Select Image"),
-                ),
-              ],
+      appBar: AppBar(
+        title: Text("Take Picture"),
+        centerTitle: true,
+        backgroundColor: Colors.green,
+      ),
+      body: Column(
+        children: <Widget>[
+          Center(
+            child: _image == null
+                ? Text('No image selected.')
+                : Container(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height / 2),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                    ),
+                    child: _imageWidget,
+                  ),
+          ),
+          Center(
+            child: SizedBox(
+              width: 200,
+              child: category != null
+                  ? ElevatedButton(
+                      onPressed: () {
+                        _blurry(context);
+                      },
+                      child: const Text('View Results'),
+                    )
+                  : Text(''),
             ),
+          ),
 
-        ));
+          SizedBox(
+            height: 8,
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showChoiceDialog(context);
+        },
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
+    );
   }
 
-  void _openGallery(BuildContext context) async {
-    XFile image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (image == null) return null;
-    setState(() {
-      _loading = true;
-      _image = File(image.path);
-    });
-    classifyImage(image);
-    Navigator.pop(context);
-  }
-
-  void _openCamera(BuildContext context) async {
-    XFile image = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-    );
-    if (image == null) return null;
-    setState(() {
-      _loading = true;
-      _image = File(image.path);
-    });
-    classifyImage(image);
-    Navigator.pop(context);
-  }
-
-  loadModal() async {
-    await Tflite.loadModel(
-      model: "assets/model_unquant.tflite",
-      labels: "assets/labels.txt",
-    );
-    print("model has been loaded");
-  }
-
-  void classifyImage(XFile image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 2,
-      threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    print("We are here========================");
-    print(output);
-    setState(() {
-      _loading = false;
-      _output = output;
-
-      String str = _output[0]["label"];
-      _name = str.substring(2);
-      _confidence = _output != null ? (_output[0]['confidence']*100.0).toString().substring(0, 2)+"%":"";
-    });
-    print(_output);
+  void _blurry(BuildContext context) {
+    Blurry.success(
+      title: 'Results',
+      description: 'Diagnosis: ${category.label}   \n'
+          'Confidence: ${category.score.toStringAsFixed(3)}',
+      confirmButtonText: 'Proceed',
+      onConfirmButtonPressed: () {},
+      barrierColor: Colors.white.withOpacity(0.7),
+      dismissable: false,
+    ).show(context);
   }
 }

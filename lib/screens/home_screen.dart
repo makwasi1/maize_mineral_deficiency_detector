@@ -17,7 +17,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[500],
-        title: Text('MMD',textAlign: TextAlign.center,),
+        title: Text(
+          'MMD',
+          textAlign: TextAlign.center,
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -32,20 +35,20 @@ class HomeScreen extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           Image.asset(
-              'images/image1.jpg',
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-              ),
+            'images/image1.jpg',
+            width: 600,
+            height: 240,
+            fit: BoxFit.cover,
+          ),
           titleSection,
           textSection,
           Center(
-            child: ElevatedButton(onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TakePicture()));
-            },
-
-                child: Text("Get Started")
-            ),
+            child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => TakePicture()));
+                },
+                child: Text("Get Started")),
           )
         ],
       ),

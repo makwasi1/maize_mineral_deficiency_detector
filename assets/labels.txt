@@ -1,2 +1,2 @@
-0 HealthyLeaves
-1 NotrogenDeficientLeaves
+0 Healthy
+1 NitrogenDeficient

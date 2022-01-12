@@ -7,6 +7,7 @@ import 'package:maizeapp/bloc/authentication_bloc/authentication_event.dart';
 import 'package:maizeapp/screens/take_picture.dart';
 import 'package:maizeapp/widgets/navigation_drawer_widget.dart';
 
+
 class HomeScreen extends StatelessWidget {
   final User user;
 
@@ -41,7 +42,9 @@ class HomeScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           titleSection,
-          textSection,
+          Card(
+            child: textSection,
+          ),
           Center(
             child: ElevatedButton(
                 onPressed: () {
@@ -86,15 +89,15 @@ Widget titleSection = Container(
 Widget textSection = const Padding(
   padding: EdgeInsets.all(10),
   child: Text(
-        'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-        'Alps. Situated 1,578 meters above sea level, it is one of the '
-        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-        'half-hour walk through pastures and pine forest, leads you to the '
-        'lake, which warms to 20 degrees Celsius in the summer. Activities '
-        'enjoyed here include rowing, and riding the summer toboggan run.',
+    'MMD is a free , easy to use software that enables farmers '
+    'to detect and identify deficiencies in the major growth nutrients '
+    'namely Nitrogen in maize crops. The software goes an extra step by '
+    'recommending actions the farmer should take to close the identified'
+    'Nutrient gap and improve on the yeilds. ',
     softWrap: true,
     style: TextStyle(
       fontSize: 17,
+      fontStyle: FontStyle.italic
     ),
   ),
 );

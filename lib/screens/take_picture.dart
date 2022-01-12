@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:maizeapp/screens/classifier.dart';
 import 'package:maizeapp/screens/classifier_quant.dart';
 import 'package:logger/logger.dart';
+import 'package:maizeapp/screens/results_page.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class TakePicture extends StatefulWidget {
@@ -135,7 +136,24 @@ class _TakePictureState extends State<TakePicture> {
         children: <Widget>[
           Center(
             child: _image == null
-                ? Text('No image selected.')
+                ? Card(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                        const ListTile(
+                          leading: Icon(Icons.camera_alt_rounded),
+                          title: Text(
+                            'No image selected ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle:
+                              Text('Click on button below to submit an image.'),
+                        ),
+                        const SizedBox(
+                          width: 300,
+                          height: 100,
+                        )
+                      ]))
                 : Container(
                     constraints: BoxConstraints(
                         maxHeight: MediaQuery.of(context).size.height / 2),
@@ -158,7 +176,6 @@ class _TakePictureState extends State<TakePicture> {
                   : Text(''),
             ),
           ),
-
           SizedBox(
             height: 8,
           ),
@@ -180,9 +197,21 @@ class _TakePictureState extends State<TakePicture> {
       description: 'Diagnosis: ${category.label}   \n'
           'Confidence: ${category.score.toStringAsFixed(3)}',
       confirmButtonText: 'Proceed',
-      onConfirmButtonPressed: () {},
+      onConfirmButtonPressed: () {
+        _checkLabel();
+      },
       barrierColor: Colors.white.withOpacity(0.7),
       dismissable: false,
     ).show(context);
+  }
+
+  Future<bool> _checkLabel() {
+    if (category.label == "1 NitrogenDeficient") {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => Results()));
+    } else {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => TakePicture()));
+    }
   }
 }
